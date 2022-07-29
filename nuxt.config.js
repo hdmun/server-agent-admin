@@ -1,11 +1,6 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
-  server: {
-    port: 3000,
-    host: 'localhost'
-  },
-
   telemetry: false,
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   // ssr: false,
@@ -66,7 +61,7 @@ export default {
 
   proxy: {
     '/api/': {
-      target: 'http://localhost:3001',
+      target: 'http://localhost:3031',
       pathRewrite: {
         '^/api/': '/'
       }
