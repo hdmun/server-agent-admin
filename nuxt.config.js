@@ -95,5 +95,9 @@ export default {
         compiler: require('vue-template-babel-compiler')
       }
     }
+  },
+
+  server: {
+    port: 3030
   }
 }
