@@ -10,7 +10,7 @@ export default {
     titleTemplate: '%s - server-agent-admin',
     title: 'server-agent-admin',
     htmlAttrs: {
-      lang: 'en',
+      lang: 'ko',
     },
     meta: [
       { charset: 'utf-8' },
