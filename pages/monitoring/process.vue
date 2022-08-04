@@ -9,7 +9,6 @@
 <script lang="ts">
 import { Context } from '@nuxt/types'
 import { Component, Vue } from 'nuxt-property-decorator'
-import path from 'path'
 
 import ProcessTable from '@/components/monitoring/processTable.vue'
 import { ProcessResponse, ProcessTableItem } from '@/dto/process'
@@ -25,7 +24,7 @@ import { ProcessResponse, ProcessTableItem } from '@/dto/process'
         return {
           hostName: value.hostName,
           serverName: value.serverName,
-          processName: path.basename(value.binaryPath),
+          processName: value.processName,
           processingTime: -1,
           threadId: -1,
           receiveTime: 'waiting...',

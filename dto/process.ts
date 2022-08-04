@@ -11,7 +11,7 @@ export interface ProcessTableItem {
 export interface ProcessResponse {
   hostName: string
   serverName: string
-  binaryPath: string
+  processName: string
 }
 
 export interface ProcessInfo extends ProcessResponse {
