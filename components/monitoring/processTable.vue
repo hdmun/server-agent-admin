@@ -29,6 +29,7 @@ import { PropType } from 'vue'
 import { Component, PropSync, Vue } from 'nuxt-property-decorator'
 
 import ErrorSnackBar from '@/components/ErrorSnackBar.vue'
+import KillCommandDialog from '@/components/KillCommandDialog.vue'
 import LoadingDialog from '@/components/LoadingDialog.vue'
 import { ProcessTableItem } from '@/dto/process'
 

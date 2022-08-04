@@ -19,7 +19,7 @@ import { HostMachineResponse, HostMachineTableItem } from '@/dto/hostMachine'
   },
   async asyncData(ctx: Context) {
     try {
-      const response = await ctx.$axios.get<HostMachineResponse[]>(`/api/server`)
+      const response = await ctx.$axios.get<HostMachineResponse[]>(`/api/host`)
       const _ = response.data.map<HostMachineTableItem>((value) => {
         return {
           hostName: value.hostName,

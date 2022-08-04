@@ -20,7 +20,7 @@ import { ProcessResponse, ProcessTableItem } from '@/dto/process'
   },
   async asyncData(ctx: Context) {
     try {
-      const response = await ctx.$axios.get<ProcessResponse[]>(`/api/process`)
+      const response = await ctx.$axios.get<ProcessResponse[]>(`/api/server`)
       const _ = response.data.map<ProcessTableItem>((value) => {
         return {
           hostName: value.hostName,
