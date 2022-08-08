@@ -1,6 +1,7 @@
 export interface HostMachineResponse {
   hostName: string
   ipAddr: string
+  alive: boolean
 }
 
 export interface MonitoringRequest {
@@ -8,9 +9,13 @@ export interface MonitoringRequest {
   monitoring: boolean
 }
 
+export interface MonitoringResponse {
+  hostName: string
+  on: boolean
+}
+
 export interface HostMachineTableItem extends HostMachineResponse {
   monitoring?: boolean
-  alive?: boolean
   aliveAckTime?: Date
   aliveAckText?: string
 }

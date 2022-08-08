@@ -5,15 +5,15 @@
       <v-spacer></v-spacer>
     </v-card-title>
     <v-data-table v-model="selected" :headers="headers" :items="hostServers" item-key="hostName" show-select>
-      <template #[`item.monitoring`]="{ item }">
-        <v-chip :color="item.monitoring ? 'green' : 'gray'" :disabled="item.alive ?? false" @click="showDialog(item)">
-          {{ item.monitoring ? 'ON' : 'OFF' }}
+      <template #[`item.alive`]="{ item }">
+        <v-chip :color="item.alive ? 'green' : 'red'">
+          {{ item.alive ? 'ON' : 'OFF' }}
         </v-chip>
       </template>
 
-      <template #[`item.alive`]="{ item }">
-        <v-chip :color="item.alive ? 'green' : 'red'">
-          {{ item.aliveAckText ?? 'off-line' }}
+      <template #[`item.monitoring`]="{ item }">
+        <v-chip :color="item.monitoring ? 'green' : 'gray'" :disabled="item.alive ?? false" @click="showDialog(item)">
+          {{ item.monitoring ? 'ON' : 'OFF' }}
         </v-chip>
       </template>
     </v-data-table>
@@ -24,13 +24,13 @@
           Monitoring
         </v-card-title>
 
-        <v-card-text>
-          {{ requestHost?.hostName }}의 Monitoring 상태를 `{{ requestHost?.monitoring ? 'ON' : 'OFF' }}`으로 변경합니다.
+        <v-card-text v-if="dialogHost !== null">
+          {{ dialogHost.hostName }}의 Monitoring 상태를 `{{ dialogHost.monitoring ? 'ON' : 'OFF' }}`으로 변경합니다.
         </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="() => this.requestHost = null">
+          <v-btn color="green darken-1" text @click="() => this.dialogHost = null">
             Cancel
           </v-btn>
           <v-btn color="green darken-1" text @click="onClickDialogOK()">
@@ -51,11 +51,16 @@ import { Component, PropSync, Vue } from 'nuxt-property-decorator'
 
 import ErrorSnackBar from '@/components/ErrorSnackBar.vue'
 import LoadingDialog from '@/components/LoadingDialog.vue'
-import { HostMachineTableItem, MonitoringRequest } from '@/dto/hostMachine'
+import { HostMachineTableItem } from '@/dto/hostMachine'
 
 interface TableHeader {
   text: string
   value: string
+}
+
+interface SetMonitoring {
+  hostName: string
+  on: boolean
 }
 
 @Component({
@@ -68,8 +73,8 @@ export default class HostMachineTable extends Vue {
   headers: TableHeader[] = [
     { text: 'HostName', value: 'hostName' },
     { text: 'Address', value: 'ipAddr' },
-    { text: 'Monitoring', value: 'monitoring' },
     { text: 'AliveAck', value: 'alive' },
+    { text: 'Monitoring', value: 'monitoring' },
   ]
 
   @PropSync('hostMachineProp', { type: Array as PropType<Array<HostMachineTableItem>> })
@@ -77,7 +82,7 @@ export default class HostMachineTable extends Vue {
 
   selected: HostMachineTableItem[] = []
 
-  requestHost: MonitoringRequest | null = null
+  dialogHost: SetMonitoring | null = null
   progress: boolean = false
   errorMessage: string = ''
 
@@ -85,26 +90,37 @@ export default class HostMachineTable extends Vue {
   beforeDestroy() { }
 
   get isAsk() {
-    return this.requestHost !== null
+    return this.dialogHost !== null
   }
 
   showDialog(item: HostMachineTableItem) {
-    this.requestHost = {
+    this.dialogHost = {
       hostName: item.hostName,
-      monitoring: !item.monitoring
+      on: !item.monitoring
     }
   }
 
-  onClickDialogOK() {
-    const requestHost = this.requestHost
-    if (requestHost === null) {
+  async onClickDialogOK() {
+    const requestHost = this.dialogHost
+    if (requestHost === null || this.hostServers === undefined) {
       // 선택된 호스트 머신이 없습니다
       return
     }
 
-    // request
+    try {
+      // axios 요청 레이어를 하나 둬야겠지?
+      const res = await this.$axios.patch<SetMonitoring>(`/api/host/monitoring/${requestHost.hostName}`, { on: requestHost.on })
+      for (const host of this.hostServers) {
+        if (host.hostName === res.data.hostName) {
+          host.monitoring = res.data.on
+        }
+      }
+    }
+    catch (error) {
+      this.errorMessage = String(error)
+    }
 
-    this.requestHost = null  // close dialog
+    this.dialogHost = null  // close dialog
   }
 }
 </script>

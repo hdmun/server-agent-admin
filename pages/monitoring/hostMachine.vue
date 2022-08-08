@@ -22,10 +22,7 @@ import { HostMachineResponse, HostMachineTableItem } from '@/dto/hostMachine'
       const response = await ctx.$axios.get<HostMachineResponse[]>(`/api/host`)
 
       const hostServers = response.data.map<HostMachineTableItem>((value) => {
-        return {
-          hostName: value.hostName,
-          ipAddr: value.ipAddr
-        }
+        return value
       })
 
       return { hostServers }
@@ -36,8 +33,25 @@ import { HostMachineResponse, HostMachineTableItem } from '@/dto/hostMachine'
 })
 export default class HostMachinePage extends Vue {
   hostServers: HostMachineTableItem[] = []
+  refreshTimer?: number
 
-  mounted() { }
-  beforeDestroy() { }
+  mounted() {
+    this.refreshTimer = window.setInterval(() => {
+      this.requestHosts()
+    }, 5000)
+  }
+
+  beforeDestroy() {
+    if (this.refreshTimer !== undefined) {
+      window.clearInterval(this.refreshTimer)
+    }
+  }
+
+  async requestHosts() {
+    const response = await this.$axios.get<HostMachineResponse[]>(`/api/host`)
+    this.hostServers = response.data.map<HostMachineTableItem>((value) => {
+      return value
+    })
+  }
 }
 </script>
