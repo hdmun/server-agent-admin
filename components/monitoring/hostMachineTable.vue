@@ -12,7 +12,7 @@
       </template>
 
       <template #[`item.monitoring`]="{ item }">
-        <v-chip :color="item.monitoring ? 'green' : 'gray'" :disabled="item.alive ?? false" @click="showDialog(item)">
+        <v-chip :color="item.monitoring ? 'green' : 'gray'" :disabled="item.alive === false" @click="showDialog(item)">
           {{ item.monitoring ? 'ON' : 'OFF' }}
         </v-chip>
       </template>

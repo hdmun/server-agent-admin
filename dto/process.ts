@@ -5,6 +5,7 @@ export interface ProcessTableItem {
   processingTime: number
   threadId: number
   receiveTime: string
+  receiveTimeText: string
   alive: boolean
 }
 
@@ -12,6 +13,9 @@ export interface ProcessResponse {
   hostName: string
   serverName: string
   processName: string
+  processingTime: number
+  threadId: number
+  receiveTime: string
 }
 
 export interface ProcessInfo extends ProcessResponse {

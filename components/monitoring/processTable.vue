@@ -56,7 +56,7 @@ export default class ProcessTable extends Vue {
     { text: 'Process', value: 'processName' },
     { text: 'Processing Time (sec)', value: 'processingTime' },
     { text: 'ThreadId', value: 'threadId' },
-    { text: 'Last Receive', value: 'receiveTime' },
+    { text: 'Last Receive', value: 'receiveTimeText' },
     { text: 'Alive', value: 'alive' },
     { text: 'Close Command', value: 'command' },
   ]
