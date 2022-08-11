@@ -12,14 +12,14 @@
       </template>
 
       <template #[`item.command`]="{ item }">
-        <v-chip :disabled="!item.alive" @click="onClickClose">
+        <v-chip :disabled="!item.alive" @click="onClickClose(item)">
           Close
         </v-chip>
       </template>
     </v-data-table>
 
-    <KillCommandDialog :opendialog="progress" :hostname="select.hostName" :servername="select.serverName"
-      @onkillcommand="onKillCommand" />
+    <KillCommandDialog :open.sync="progress" :errorMessage.sync="errorMessage" :hostName="select.hostName"
+      :serverName="select.serverName" @onKillCommand="onKillCommand" />
     <ErrorSnackBar :text="errorMessage" :show="errorMessage !== ''" />
   </v-card>
 </template>
@@ -31,7 +31,7 @@ import { Component, PropSync, Vue } from 'nuxt-property-decorator'
 import ErrorSnackBar from '@/components/ErrorSnackBar.vue'
 import KillCommandDialog from '@/components/KillCommandDialog.vue'
 import LoadingDialog from '@/components/LoadingDialog.vue'
-import { ProcessTableItem } from '@/dto/process'
+import { ProcessKillResponse, ProcessTableItem } from '@/dto/process'
 
 interface TableHeader {
   text: string
@@ -46,7 +46,8 @@ interface SelectProcessTableItem {
 @Component({
   components: {
     ErrorSnackBar,
-    LoadingDialog
+    LoadingDialog,
+    KillCommandDialog
   }
 })
 export default class ProcessTable extends Vue {
@@ -68,15 +69,25 @@ export default class ProcessTable extends Vue {
   progress: boolean = false
   errorMessage: string = ''
 
+  mounted() { }
+
   onClickClose(item: ProcessTableItem) {
     this.select.hostName = item.hostName
     this.select.serverName = item.serverName
     this.progress = true
   }
 
-  onKillCommand(command: string) {
+  async onKillCommand(command: string) {
     try {
-      // request kill command
+      const response = await this.$axios.delete<ProcessKillResponse>(
+        `/api/server/${this.select.hostName}/${this.select.serverName}/${command}`)
+      console.log(`ProcessKillResponse`, response.data)
+      for (const killedProcess of response.data.servers) {
+        const process = this.processes?.find((value) => value.serverName === killedProcess.serverName)
+        if (process) {
+          process.alive = !killedProcess.close
+        }
+      }
     } catch (error) {
       let message = ''
       if (error instanceof Error) message = error.message

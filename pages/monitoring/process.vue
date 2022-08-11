@@ -72,12 +72,10 @@ export default class ProcessPage extends Vue {
   beforeDestroy() {
     if (this.receiveTimer) {
       window.clearInterval(this.receiveTimer)
-      console.log('window.clearInterval(this.refreshTimer)')
     }
 
     if (this.refreshTimer) {
       window.clearInterval(this.refreshTimer)
-      console.log('window.clearInterval(this.refreshTimer)')
     }
   }
 

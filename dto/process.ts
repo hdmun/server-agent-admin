@@ -31,8 +31,12 @@ export interface ProcessKillRequest {
   killCommand: string
 }
 
-export interface ProcessKillResponse {
+interface ProcessKillResult {
   serverName: string
   exitCode: number
   close: boolean
+}
+
+export interface ProcessKillResponse {
+  servers: ProcessKillResult[]
 }
