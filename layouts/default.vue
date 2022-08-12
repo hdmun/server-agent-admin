@@ -59,6 +59,11 @@ export default {
           icon: 'mdi-desktop-classic',
           title: 'Process',
           to: '/monitoring/process'
+        },
+        {
+          icon: 'mdi-truck-cargo-container',
+          title: '배포',
+          to: '/deploy'
         }
       ],
       miniVariant: false,
