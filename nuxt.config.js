@@ -99,5 +99,10 @@ export default {
 
   server: {
     port: 3030
-  }
+  },
+  storybook: {
+    decorators: [
+      '<v-app><story/></v-app>'
+    ]
+  },
 }
